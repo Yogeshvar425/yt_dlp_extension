@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "YT-DLP Downloader",
+  "version": "1.1",
+  "description": "Download YouTube videos cleanly using your local yt-dlp",
+  "permissions": [
+    "activeTab",
+    "nativeMessaging"
+  ],
+  "icons": {
+    "128": "icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*"
+  ]
+}
