@@ -208,6 +208,14 @@ The FastAPI server exposes the following endpoints on `http://127.0.0.1:8000`:
 
 ---
 
+## Support
+
+If this free tool saves you time, consider supporting future development:
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-yellow?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://ko-fi.com/Yogeshvar425)
+
+---
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).

@@ -216,6 +216,12 @@ async function showActualModal(cx, cy) {
                 </div>
                 
                 <button id="yt-dlp-start-btn" style="display:none;">THROW POKÉBALL (DL)</button>
+                
+                <div style="text-align: center; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;">
+                    <a href="https://ko-fi.com/Yogeshvar425" target="_blank" style="color: #ffd700; font-size: 11px; text-decoration: none; font-weight: bold; font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 4px; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">
+                        ☕ Support Developer (Buy me a coffee)
+                    </a>
+                </div>
             </div>
         </div>
         </div>
