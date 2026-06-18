@@ -43,16 +43,7 @@ PokéDex Downloader injects a floating Pokéball button on every YouTube watch p
   <img src="assets/architecture.png" alt="PokéDex Downloader Architecture" width="800" style="border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);" />
 </p>
 
-| Component | Role |
-|---|---|
-| `content.js` | Injects the Pokéball button and modal UI on YouTube watch pages |
-| `content.css` | All styling — Pokédex theme, animations, dark glassmorphic modal |
-| `background.js` | Service worker that bridges Native Messaging for file ops and server launch |
-| `main.py` | FastAPI server — format listing, WebSocket downloads, file browse/check/open/reveal |
-| `native_host.py` | Chrome Native Messaging host — handles `openFile`, `revealFile`, `launchServer` without HTTP |
-| `start_server.vbs` | Launches the server in a hidden window (no console flash) |
 
----
 
 ## Prerequisites
 
