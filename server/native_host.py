@@ -27,12 +27,15 @@ def send_message(msg):
     sys.stdout.buffer.write(encoded)
     sys.stdout.buffer.flush()
 
-def launch_server():
+def launch_server(token=""):
     """Start the FastAPI server if not already running."""
     vbs_path = os.path.join(SCRIPT_DIR, 'start_server.vbs')
     try:
+        cmd_args = ['wscript', '//nologo', vbs_path]
+        if token:
+            cmd_args.append(token)
         subprocess.Popen(
-            ['wscript', '//nologo', vbs_path],
+            cmd_args,
             creationflags=subprocess.CREATE_NO_WINDOW
         )
         return {"ok": True}
@@ -69,7 +72,7 @@ def main():
     action = msg.get("action", "")
 
     if action == "launchServer":
-        send_message(launch_server())
+        send_message(launch_server(msg.get("token", "")))
     elif action == "openFile":
         send_message(open_file(msg.get("saveDir", ""), msg.get("filename", "")))
     elif action == "revealFile":

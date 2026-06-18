@@ -11,8 +11,7 @@ logFile = currentDir & "\server.log"
 ' Check if the server is already running by trying to connect to port 8000
 Set http = CreateObject("MSXML2.XMLHTTP.6.0")
 On Error Resume Next
-http.Open "GET", "http://127.0.0.1:8000/check?v=test&save_dir=.", False
-http.setRequestHeader "Content-Type", "application/json"
+http.Open "GET", "http://127.0.0.1:8000/ping", False
 http.Send
 
 If Err.Number = 0 And http.Status = 200 Then
@@ -22,5 +21,10 @@ End If
 
 On Error Resume Next
 
+token = ""
+If WScript.Arguments.Count > 0 Then
+    token = WScript.Arguments(0)
+End If
+
 ' Server is NOT running, start it
-WshShell.Run "cmd.exe /c cd /d """ & currentDir & """ && """ & pythonExe & """ """ & mainScript & """ > """ & logFile & """ 2>&1", 0, False
+WshShell.Run "cmd.exe /c cd /d """ & currentDir & """ && """ & pythonExe & """ """ & mainScript & """ --token """ & token & """ > """ & logFile & """ 2>&1", 0, False

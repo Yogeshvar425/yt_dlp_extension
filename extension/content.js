@@ -1,3 +1,26 @@
+function getAuthToken() {
+    return new Promise((resolve) => {
+        if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+            chrome.storage.local.get(['apiToken'], (result) => {
+                resolve(result.apiToken || '');
+            });
+        } else {
+            resolve('');
+        }
+    });
+}
+
+async function authenticatedFetch(url, options = {}) {
+    const token = await getAuthToken();
+    if (!options.headers) options.headers = {};
+    if (typeof options.headers.set === 'function') {
+        options.headers.set('X-API-Token', token);
+    } else {
+        options.headers['X-API-Token'] = token;
+    }
+    return fetch(url, options);
+}
+
 function injectButton() {
     if (document.getElementById('yt-dlp-wrapper')) return;
     if (!location.href.includes('/watch')) return;
@@ -67,7 +90,7 @@ async function checkIfCaught() {
     const ball = document.getElementById('floating-pokeball');
 
     try {
-        const res = await fetch(`http://127.0.0.1:8000/check?v=${v}&save_dir=${encodeURIComponent(dir)}`);
+        const res = await authenticatedFetch(`http://127.0.0.1:8000/check?v=${v}&save_dir=${encodeURIComponent(dir)}`);
         const data = await res.json();
         if (data.downloaded) {
             setCaughtCache(v, data.filename, dir);
@@ -276,7 +299,7 @@ async function showActualModal(cx, cy) {
         const btn = document.getElementById('yt-dlp-browse-btn');
         btn.innerText = '...';
         try {
-            const bRes = await fetch('http://127.0.0.1:8000/browse');
+            const bRes = await authenticatedFetch('http://127.0.0.1:8000/browse');
             const bData = await bRes.json();
             if (bData.path) {
                 document.getElementById('yt-dlp-save-dir').value = bData.path;
@@ -318,7 +341,7 @@ async function fetchAndPopulateFormats(cleanUrl, cx, cy) {
     }
     
     try {
-        const res = await fetch(`http://127.0.0.1:8000/formats?url=${encodeURIComponent(cleanUrl)}`);
+        const res = await authenticatedFetch(`http://127.0.0.1:8000/formats?url=${encodeURIComponent(cleanUrl)}`);
         const data = await res.json();
         
         if (data.error) throw new Error(data.error);
@@ -425,7 +448,7 @@ async function fetchAndPopulateFormats(cleanUrl, cx, cy) {
                     `;
                 }
                 try {
-                    const testRes = await fetch('http://127.0.0.1:8000/check?v=test&save_dir=.', { signal: AbortSignal.timeout(2500) });
+                    const testRes = await authenticatedFetch('http://127.0.0.1:8000/check?v=test&save_dir=.', { signal: AbortSignal.timeout(2500) });
                     if (testRes.ok) {
                         // Server is up! Fetch formats again
                         fetchAndPopulateFormats(cleanUrl, cx, cy);
@@ -473,7 +496,8 @@ async function startDownload(url, format, save_dir) {
     statusDiv.innerText = 'Throwing Pokéball...';
     
     try {
-        const ws = new WebSocket('ws://127.0.0.1:8000/ws/download');
+        const token = await getAuthToken();
+        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/download?token=${encodeURIComponent(token)}`);
         
         ws.onopen = () => {
             const payload = { url, format };

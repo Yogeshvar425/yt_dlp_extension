@@ -5,7 +5,8 @@
   "description": "Download YouTube videos cleanly using your local yt-dlp",
   "permissions": [
     "activeTab",
-    "nativeMessaging"
+    "nativeMessaging",
+    "storage"
   ],
   "icons": {
     "128": "icon128.png"

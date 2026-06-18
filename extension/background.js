@@ -31,8 +31,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 }
             });
 
-            // Send the full message to the native host
-            port.postMessage(message);
+            if (action === "launchServer") {
+                const token = self.crypto.randomUUID ? self.crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36);
+                chrome.storage.local.set({ apiToken: token }, () => {
+                    message.token = token;
+                    port.postMessage(message);
+                });
+            } else {
+                // Send the message directly for other actions (openFile, revealFile)
+                port.postMessage(message);
+            }
 
         } catch (e) {
             console.error("Failed to launch native host:", e);

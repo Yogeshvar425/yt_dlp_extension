@@ -13,6 +13,15 @@ import uvicorn
 from typing import Optional
 from pydantic import BaseModel
 
+import argparse
+from fastapi.responses import JSONResponse
+
+# Parse token argument if present
+parser = argparse.ArgumentParser()
+parser.add_argument("--token", type=str, default="")
+args, unknown = parser.parse_known_args()
+SECURE_TOKEN = args.token
+
 # ── Auto-shutdown config ──────────────────────────────────────────
 IDLE_TIMEOUT_SECONDS = 120  # 2 minutes of no activity → shutdown
 _last_activity = time.time()
@@ -32,6 +41,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── Token verification middleware ─────────────────────────────────
+@app.middleware("http")
+async def verify_token_middleware(request: Request, call_next):
+    # OPTIONS (CORS preflight) and /ping do not require authentication.
+    # If SECURE_TOKEN is empty (e.g. manual CLI start), authentication is disabled.
+    if request.method == "OPTIONS" or request.url.path == "/ping" or not SECURE_TOKEN:
+        return await call_next(request)
+        
+    token = request.headers.get("X-API-Token")
+    if token != SECURE_TOKEN:
+        return JSONResponse({"error": "Unauthorized: Invalid API Token"}, status_code=403)
+        
+    return await call_next(request)
 
 # ── Middleware: track last activity on every request ──────────────
 @app.middleware("http")
@@ -128,6 +151,14 @@ def get_formats(url: str):
 @app.websocket("/ws/download")
 async def websocket_download(websocket: WebSocket):
     global _last_activity
+    
+    # Verify secure token in query params
+    token = websocket.query_params.get("token")
+    if SECURE_TOKEN and token != SECURE_TOKEN:
+        await websocket.accept()
+        await websocket.close(code=4003)
+        return
+        
     await websocket.accept()
     process = None
     try:
