@@ -39,26 +39,9 @@ PokéDex Downloader injects a floating Pokéball button on every YouTube watch p
 
 ## Architecture
 
-```
-┌────────────────────────────────┐
-│         Chrome Extension       │
-│  ┌──────────┐  ┌────────────┐  │
-│  │content.js│  │background.js│  │
-│  │  (UI +   │  │  (Native   │  │
-│  │  fetch)  │  │  Messaging)│  │
-│  └────┬─────┘  └──────┬─────┘  │
-│       │               │        │
-└───────┼───────────────┼────────┘
-        │               │
-   HTTP/WebSocket    Native Messaging
-        │               │
-┌───────▼───────┐ ┌─────▼─────────┐
-│  FastAPI       │ │ native_host.py│
-│  (main.py)     │ │  (stdio)      │
-│  Port 8000     │ │  open/reveal  │
-│  yt-dlp calls  │ │  launch srv   │
-└────────────────┘ └───────────────┘
-```
+<p align="center">
+  <img src="assets/architecture.png" alt="PokéDex Downloader Architecture" width="800" style="border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);" />
+</p>
 
 | Component | Role |
 |---|---|
