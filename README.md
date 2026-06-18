@@ -43,7 +43,16 @@ PokéDex Downloader injects a floating Pokéball button on every YouTube watch p
   <img src="assets/architecture.png" alt="PokéDex Downloader Architecture" width="800" style="border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);" />
 </p>
 
+---
 
+## Security
+
+To secure your local machine from unauthorized web access:
+- **Chrome Native Messaging Bounds**: The native host configuration (`com.ytdlp.server.json`) restricts execution and communication access strictly to your specific Chrome Extension ID.
+- **Dynamic Token Authentication**: When the extension starts the FastAPI server, it generates a cryptographically secure API token. All subsequent HTTP requests must include this token in the `X-API-Token` header, and WebSocket connections must pass it in the `token` query parameter.
+- **Protected Endpoints**: System-exposing endpoints (like `/formats`, `/check`, `/browse`, `/open`, `/reveal`) will immediately reject unauthorized requests with `403 Forbidden`. Only the lightweight `/ping` health check endpoint remains publicly open.
+
+---
 
 ## Prerequisites
 
