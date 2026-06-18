@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/demo.gif" alt="PokéDex Downloader Demo" width="600" style="border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);" />
+  <video src="assets/demo.mp4" width="600" autoplay loop muted playsinline style="border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);"></video>
 </p>
 
 ---
